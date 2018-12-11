@@ -1,0 +1,76 @@
+#1.DDL语句以及插入数据练习
+create table Student(sid int primary key auto_increment,sname varchar(20),birthday datetime,sex char(1))auto_increment=1001;
+insert into Student(sname,birthday,sex) values('张三','1990-10-10','男'),('李四','1981-10-10','男'),('王五','1981-11-10','女'),('赵六','1988-10-10','男'),('孙七','1989-01-10','女'),('周八','1990-10-10','男'),('张三','1990-06-10','女');
+
+create table teacher(tid int primary key auto_increment,tname varchar(20));
+insert into teacher(tname) values('叶平'),('王老师'),('张老师'),('李老师'),('孙老师');
+
+
+create table course(cid int primary key auto_increment,cname varchar(20),tid int)auto_increment=1;
+insert into course(cname,tid) values(' 企业管理',1),(' 马克思',2),('UML',3),(' 数据库',4),(' 英语',5),( '语文',1),(' 数学',2);
+
+create table sc(sid int,cid int,score int);
+load data infile 'e:\\sc.txt' into table sc fields terminated by ',';
+
+# 2.单表查询练习
+select count(*)from teacher where tname like '李%';
+select count(*),sex from student group by sex;
+select sname,count(*) from student group by sname;
+select sname,birthday from student where birthday like '1981%';
+select sid,score from sc where score>60;
+select count(*) from sc; 
+select sid,count(*) from sc group by sid having count(*)>=2;
+select cid,max(score),min(score) from sc group by cid;
+select cid,count(*) from sc group by cid order by count(*) desc,cid asc;
+
+
+source e:/scott.sql;
+
+1.select * from emp where year(now())-year(hiredate)>38;
+2.select empno,ename,hiredate from emp where month(hiredate)=month(now());
+3.select empno,ename,hiredate from emp where month(hiredate)=month(date_add(now(),interval 1 month));
+4.select empno,ename,hiredate from emp where year(hiredate)=1980 and month(hiredate)>=6;
+5.select empno,ename from emp where char_length(ename)=4;
+select empno,ename from emp having char_length(ename)=4;
+6.select job,min(sal) from emp group by job;
+7.select count(*) from emp where year(hiredate)=1980 group by month(hiredate);
+8.select deptno,max(sal) from emp group by deptno; 
+9.select deptno,job,max(sal) from emp group by deptno,job; 
+10.select deptno,sum(sal),avg(sal) from emp group by deptno;
+11.select deptno,sum(sal),avg(sal) from emp where deptno=10 or deptno=20 group by deptno;
+select deptno,sum(sal),avg(sal) from emp where deptno in(10,20) group by deptno;
+12.select deptno,avg(sal) from emp group by deptno having avg(sal)>2000 ;
+13.select count(*),job from emp e inner join dept d on e.deptno=d.deptno group by job having job like 'm%';
+14.select * from emp order by sal desc limit 3;
+15.select * from emp order by sal desc limit 5,5;
+
+
+#表连接查询练习
+1.select sname,cname,score,tname from student s inner join sc on s.sid=sc.sid inner join course c on sc.cid=c.cid inner join teacher t on c.tid=t.tid where sname='李四';
+
+2. 
+select cname from student s inner join sc on s.sid=sc.sid inner join course c on sc.cid=c.cid inner join teacher t on c.tid=t.tid 
+
+3.select s.sid,sname,count(sc.cid),sum(score) from student s inner join sc on s.sid=sc.sid inner join course c on sc.cid=c.cid inner join teacher t on c.tid=t.tid group by sname,s.sid;
+
+4.select s.sid,sname from student s inner join sc on s.sid=sc.sid group by sname,s.sid having max(score)<=60;
+
+5.select s.sid,sname from student s inner join sc on s.sid=sc.sid group by sname,s.sid having count(sc.cid)<7;
+
+6.select cname,count(*) from student s inner join sc on s.sid=sc.sid inner join course c on sc.cid=c.cid inner join teacher t on c.tid=t.tid group by cname;
+
+7.select s.sid,sname from student s inner join sc on s.sid=sc.sid group by sname,s.sid having count(sc.cid)=1;
+
+8.select cid,avg(score) from student s inner join sc on s.sid=sc.sid  group by cid order by avg(score) asc,cid desc;
+
+9.select s.sid,sname,avg(score) from student s inner join sc on s.sid=sc.sid group by sname,s.sid having avg(score)>80;
+
+10.
+select cname,score from student s inner join sc on s.sid=sc.sid inner join course c on sc.cid=c.cid inner join teacher t on c.tid=t.tid group by cname,score having count(*)>=2;
+
+11.select cname,sc.cid from student s inner join sc on s.sid=sc.sid inner join course c on sc.cid=c.cid inner join teacher t on c.tid=t.tid group by cname,sc.cid having count(*)=7;
+
+12.select s.sid,avg(score) from student s inner join sc on s.sid=sc.sid where score<60 group by s.sid having count(score)>2;
+
+
+
